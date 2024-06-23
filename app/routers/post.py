@@ -10,7 +10,9 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
 @router.get("/", response_model=List[schemas.Post])
-def get_posts(db: Session = Depends(get_db)):
+def get_posts(
+    db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)
+):
 
     # cursor.execute(""" SELECT * FROM posts """)
     # posts = cursor.fetchall()
@@ -21,7 +23,11 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
-def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
+def create_post(
+    post: schemas.PostCreate,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user),
+):
 
     # cursor.execute(
     #     """ INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING * """,
